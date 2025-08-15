@@ -16,7 +16,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../instructor/courses.php">
+                    <a class="nav-link" href="../instructor/my_courses.php">
                         <i class="fas fa-book"></i> My Courses
                     </a>
                 </li>
