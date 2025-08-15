@@ -43,7 +43,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="../forum/manage.php">
+                <a class="nav-link" href="../messages/inbox.php">
                     <i class="fas fa-comments"></i> Forum Management
                 </a>
             </li>

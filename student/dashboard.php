@@ -59,10 +59,9 @@ $recent_quizzes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <?php include '../includes/student_navbar.php'; ?>
     
-    <div class="container-fluid">
-        <div class="row">
+    <div class="container-fluid min-vh-100 bg-light">
+        <div class="row flex-nowrap">
             <?php include '../includes/student_sidebar.php'; ?>
-            
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">
@@ -80,85 +79,58 @@ $recent_quizzes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <!-- Welcome Section -->
                 <div class="row mb-4">
                     <div class="col-12">
-                        <div class="card bg-primary text-white">
-                            <div class="card-body">
-                                <h4><i class="fas fa-user-graduate"></i> Welcome back, <?php echo $_SESSION['first_name']; ?>!</h4>
-                                <p class="mb-0">You have <?php echo count($enrolled_courses); ?> active courses and <?php echo count(array_filter($recent_assignments, function($a) { return $a['status'] == 'pending'; })); ?> pending assignments.</p>
+                        <div class="card bg-primary text-white shadow-sm border-0">
+                            <div class="card-body py-4">
+                                <h4 class="mb-2"><i class="fas fa-user-graduate"></i> Welcome back, <?php echo $_SESSION['first_name']; ?>!</h4>
+                                <p class="mb-0 fs-5">You have <b><?php echo count($enrolled_courses); ?></b> active courses and <b><?php echo count(array_filter($recent_assignments, function($a) { return $a['status'] == 'pending'; })); ?></b> pending assignments.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Stats Cards -->
-                <div class="row mb-4">
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Enrolled Courses</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo count($enrolled_courses); ?></div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-book fa-2x text-gray-300"></i>
-                                    </div>
+                <div class="row g-4 mb-4">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-xs fw-bold text-primary text-uppercase mb-1">Enrolled Courses</div>
+                                    <div class="h4 mb-0 fw-bold text-dark"><?php echo count($enrolled_courses); ?></div>
                                 </div>
+                                <i class="fas fa-book fa-2x text-primary"></i>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Completed Assignments</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            <?php echo count(array_filter($recent_assignments, function($a) { return $a['status'] == 'submitted'; })); ?>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-clipboard-check fa-2x text-gray-300"></i>
-                                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-xs fw-bold text-success text-uppercase mb-1">Completed Assignments</div>
+                                    <div class="h4 mb-0 fw-bold text-dark"><?php echo count(array_filter($recent_assignments, function($a) { return $a['status'] == 'submitted'; })); ?></div>
                                 </div>
+                                <i class="fas fa-clipboard-check fa-2x text-success"></i>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-info shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Quiz Attempts</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo count($recent_quizzes); ?></div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-question-circle fa-2x text-gray-300"></i>
-                                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-xs fw-bold text-info text-uppercase mb-1">Quiz Attempts</div>
+                                    <div class="h4 mb-0 fw-bold text-dark"><?php echo count($recent_quizzes); ?></div>
                                 </div>
+                                <i class="fas fa-question-circle fa-2x text-info"></i>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Pending Tasks</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            <?php echo count(array_filter($recent_assignments, function($a) { return $a['status'] == 'pending'; })); ?>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
-                                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="text-xs fw-bold text-warning text-uppercase mb-1">Pending Tasks</div>
+                                    <div class="h4 mb-0 fw-bold text-dark"><?php echo count(array_filter($recent_assignments, function($a) { return $a['status'] == 'pending'; })); ?></div>
                                 </div>
+                                <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
                             </div>
                         </div>
                     </div>

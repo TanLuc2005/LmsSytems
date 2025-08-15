@@ -137,11 +137,8 @@ if ($_POST) {
                         </form>
                         
                         <div class="text-center mt-4">
-                            <small class="text-muted">
-                                Accounts:<br>
-                                Admin: admin / 123456<br>
-                                Instructor: prof_smith / instructor123<br>
-                                Student: student1 / student123
+                            <small class="text-muted"></small>
+                                Don't have an account? <a href="register.php" class="text-primary"><i class="fas fa-user-plus"></i> Register</a>
                             </small>
                         </div>
                     </div>
