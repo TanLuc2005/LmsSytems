@@ -8,22 +8,18 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$db = (new Database())->getConnection();
 $course_id = intval($_GET['course_id'] ?? 0);
 if (!$course_id) {
-    echo 'Khóa học không hợp lệ.';
+    echo 'Invalid course.';
     exit();
 }
 
-// Lấy danh sách category theo course
+// Get categories by course
 $categories = [];
-$stmt = $conn->prepare('SELECT id, name FROM forum_categories WHERE course_id = ?');
-$stmt->bind_param('i', $course_id);
-$stmt->execute();
-$result = $stmt->get_result();
-while ($row = $result->fetch_assoc()) {
-    $categories[] = $row;
-}
-$stmt->close();
+$stmt = $db->prepare('SELECT id, name FROM forum_categories WHERE course_id = ?');
+$stmt->execute([$course_id]);
+$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $errors = [];
 $success = '';
@@ -34,27 +30,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = trim($_POST['content'] ?? '');
     $csrf_token = $_POST['csrf_token'] ?? '';
     if (empty($_SESSION['csrf_token']) || $csrf_token !== $_SESSION['csrf_token']) {
-        $errors[] = 'CSRF token không hợp lệ.';
+        $errors[] = 'Invalid CSRF token.';
     }
     if (!$category_id || empty($title) || empty($content)) {
-        $errors[] = 'Vui lòng nhập đầy đủ thông tin.';
+        $errors[] = 'Please fill in all required fields.';
     }
     if (!$errors) {
-        // Tạo topic
-        $stmt = $conn->prepare('INSERT INTO forum_topics (category_id, user_id, title, created_at) VALUES (?, ?, ?, NOW())');
-        $stmt->bind_param('iis', $category_id, $_SESSION['user_id'], $title);
-        if ($stmt->execute()) {
-            $topic_id = $stmt->insert_id;
-            // Tạo post đầu tiên
-            $stmt2 = $conn->prepare('INSERT INTO forum_posts (topic_id, user_id, content, created_at) VALUES (?, ?, ?, NOW())');
-            $stmt2->bind_param('iis', $topic_id, $_SESSION['user_id'], $content);
-            $stmt2->execute();
-            $stmt2->close();
-            $success = 'Tạo chủ đề thành công!';
+        // Create topic
+        $stmt = $db->prepare('INSERT INTO forum_topics (category_id, user_id, title, created_at) VALUES (?, ?, ?, NOW())');
+        if ($stmt->execute([$category_id, $_SESSION['user_id'], $title])) {
+            $topic_id = $db->lastInsertId();
+            // Create first post
+            $stmt2 = $db->prepare('INSERT INTO forum_posts (topic_id, user_id, content, created_at) VALUES (?, ?, ?, NOW())');
+            $stmt2->execute([$topic_id, $_SESSION['user_id'], $content]);
+            $success = 'Topic created successfully!';
         } else {
-            $errors[] = 'Lỗi khi tạo chủ đề.';
+            $errors[] = 'Error creating topic.';
         }
-        $stmt->close();
     }
 }
 if (empty($_SESSION['csrf_token'])) {
@@ -63,14 +55,14 @@ if (empty($_SESSION['csrf_token'])) {
 $csrf_token = $_SESSION['csrf_token'];
 ?>
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Tạo chủ đề mới</title>
+    <title>Create New Topic</title>
     <link rel="stylesheet" href="../assets/css/dashboard.css">
 </head>
 <body>
-    <h2>Tạo chủ đề mới</h2>
+    <h2>Create New Topic</h2>
     <?php if ($errors): ?>
         <div style="color:red;">
             <?php foreach ($errors as $e) echo '<p>' . htmlspecialchars($e) . '</p>'; ?>
@@ -80,21 +72,21 @@ $csrf_token = $_SESSION['csrf_token'];
         <div style="color:green;"><p><?= $success ?></p></div>
     <?php endif; ?>
     <form method="post">
-        <label>Chuyên mục:
+        <label>Category:
             <select name="category_id" required>
-                <option value="">--Chọn--</option>
+                <option value="">--Select--</option>
                 <?php foreach ($categories as $cat): ?>
                     <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
                 <?php endforeach; ?>
             </select>
         </label><br>
-        <label>Tiêu đề: <input type="text" name="title" required></label><br>
-        <label>Nội dung:<br>
+        <label>Title: <input type="text" name="title" required></label><br>
+        <label>Content:<br>
             <textarea name="content" rows="5" cols="50" required></textarea>
         </label><br>
         <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
-        <button type="submit">Tạo chủ đề</button>
+        <button type="submit">Create Topic</button>
     </form>
-    <p><a href="index.php">Quay lại diễn đàn</a></p>
+    <p><a href="index.php">Back to forum</a></p>
 </body>
 </html>
