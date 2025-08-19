@@ -1,7 +1,8 @@
+
 <?php
+session_start();
 require_once '../config/database.php';
 require_once '../auth/login.php';
-session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
     header('Location: ../auth/login.php');
     exit();
@@ -42,11 +43,11 @@ function formatDate($date) {
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2"><i class="fas fa-book"></i> My Courses</h1>
                 </div>
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">
-                            <i class="fas fa-book"></i> Enrolled Courses
-                        </h6>
+                <div class="card border-0 shadow-lg mb-4" style="background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%); border-radius: 1.2rem;">
+                    <div class="card-header py-3" style="background: linear-gradient(90deg, #4f8cff 60%, #6ee7b7 100%); border-top-left-radius: 1.2rem; border-top-right-radius: 1.2rem;">
+                        <h4 class="m-0 fw-bold text-white d-flex align-items-center">
+                            <i class="fas fa-book-reader me-2"></i> Enrolled Courses
+                        </h4>
                     </div>
                     <div class="card-body">
                         <?php if (empty($enrolled_courses)): ?>
@@ -57,8 +58,8 @@ function formatDate($date) {
                             </div>
                         <?php else: ?>
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover align-middle">
-                                <thead class="table-primary">
+                            <table class="table table-hover align-middle border rounded-3 overflow-hidden" style="background: #fff;">
+                                <thead style="background: linear-gradient(90deg, #4f8cff 60%, #6ee7b7 100%); color: #fff;">
                                     <tr>
                                         <th><i class="fas fa-book"></i> Title</th>
                                         <th><i class="fas fa-code"></i> Code</th>
@@ -69,13 +70,13 @@ function formatDate($date) {
                                 </thead>
                                 <tbody>
                                 <?php foreach ($enrolled_courses as $course): ?>
-                                    <tr>
-                                        <td><i class="fas fa-book-open text-primary"></i> <?php echo htmlspecialchars($course['title']); ?></td>
-                                        <td><?php echo htmlspecialchars($course['course_code']); ?></td>
-                                        <td><i class="fas fa-chalkboard-teacher text-info"></i> <?php echo htmlspecialchars($course['first_name'] . ' ' . $course['last_name']); ?></td>
-                                        <td><?php echo formatDate($course['enrollment_date']); ?></td>
+                                    <tr style="border-bottom: 1px solid #e0e7ff;">
+                                        <td><span class="badge bg-primary bg-gradient me-2"><i class="fas fa-book-open"></i></span> <span class="fw-semibold"><?php echo htmlspecialchars($course['title']); ?></span></td>
+                                        <td><span class="badge bg-info text-dark fw-normal"><i class="fas fa-code"></i> <?php echo htmlspecialchars($course['course_code']); ?></span></td>
+                                        <td><span class="badge bg-success bg-gradient me-2"><i class="fas fa-chalkboard-teacher"></i></span> <?php echo htmlspecialchars($course['first_name'] . ' ' . $course['last_name']); ?></td>
+                                        <td><span class="badge bg-secondary"><i class="fas fa-calendar-alt"></i> <?php echo formatDate($course['enrollment_date']); ?></span></td>
                                         <td>
-                                            <a href="course_view.php?id=<?php echo $course['id']; ?>" class="btn btn-sm btn-primary">
+                                            <a href="course_view.php?id=<?php echo $course['id']; ?>" class="btn btn-outline-primary btn-sm rounded-pill px-3 shadow-sm">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
                                         </td>

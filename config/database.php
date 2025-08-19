@@ -43,8 +43,10 @@ function hasRole($role) {
     return isset($_SESSION['role']) && $_SESSION['role'] === $role;
 }
 
-function formatDate($date) {
-    return date('M j, Y g:i A', strtotime($date));
+if (!function_exists('formatDate')) {
+    function formatDate($date) {
+        return date('M j, Y g:i A', strtotime($date));
+    }
 }
 
 function sanitizeInput($data) {
